@@ -1,0 +1,19 @@
+{
+  "name": "file-manager",
+  "version": "1.0.0",
+  "description": "project for RSSchool nodejs course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlueOwll/file-manager.git"
+  },
+  "author": "BlueOwll",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BlueOwll/file-manager/issues"
+  },
+  "homepage": "https://github.com/BlueOwll/file-manager#readme"
+}
