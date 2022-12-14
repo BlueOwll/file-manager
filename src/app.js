@@ -1,6 +1,9 @@
 import  readline from 'readline';
 import os from 'os';
-import { INVALID_INPUT_ERROR_TEXT, commands } from './constants.js';
+
+import parseCommand from './parse.js';
+import { commands } from './constants.js';
+
 const USER_KEY = '--username';
 
 
@@ -20,24 +23,22 @@ export const app = (args) => {
   }
 
   process.chdir(os.homedir());
-  currentDir = process.cwd();
-
+  
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   rl.setPrompt('Enter command >');
   rl.prompt();
 
-  rl.on('line', (data) => {
-    switch (data) {
-      case commands.exit:
-        appExit();  
-        break;
-      case commands.help:
-        showHelp();
-        break;
-      default:
-        console.log(INVALID_INPUT_ERROR_TEXT);      
+  rl.on('line', async (data) => {
+    if (data.trim() === commands.exit) {
+      appExit();
     }
-    console.log(`You are currently in ${currentDir}`); //TODO
+    try {
+      await parseCommand(data);    
+    } catch(e) {
+      console.log(e.message);
+    }
+    
+    console.log(`You are currently in ${process.cwd()}`);
     rl.prompt();
   });
 
