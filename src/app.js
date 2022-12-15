@@ -33,7 +33,9 @@ export const app = (args) => {
       appExit();
     }
     try {
-      await parseCommand(data);    
+      rl.pause();
+      await parseCommand(data);  
+      rl.resume();  
     } catch(e) {
       console.log(e.message);
     }

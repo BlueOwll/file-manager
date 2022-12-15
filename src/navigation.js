@@ -1,5 +1,6 @@
 import { sep, resolve as pathResolve } from 'path';
 import { readdir } from 'fs/promises';
+import { OPERATION_FAILED_ERROR_TEXT } from './constants.js';
 
 export const doUp = () => {  
   let pathArr = process.cwd().split(sep);
@@ -14,7 +15,7 @@ export const doCd =  (path) => {
   try {
     process.chdir(pathResolve(path));
   } catch {
-    throw new Error ();
+    throw new Error(OPERATION_FAILED_ERROR_TEXT);
   }
   //console.log(path);
 }
@@ -59,7 +60,7 @@ export const doLs = async () => {
     });
     console.log(`└${'─'.repeat(indexwidth)}┴${'─'.repeat(namewidth)}┴${'─'.repeat(typewidth)}┘`);
   } catch (e){
-    throw new Error ();
+    throw new Error(OPERATION_FAILED_ERROR_TEXT);
   }
 }
 

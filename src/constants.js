@@ -6,5 +6,6 @@ export const commands = {
   help: 'help',
   up: 'up',
   cd: 'cd',
-  ls:'ls'
+  ls:'ls',
+  cat: 'cat'
 }

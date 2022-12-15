@@ -1,44 +1,43 @@
 
-import { INVALID_INPUT_ERROR_TEXT, commands, OPERATION_FAILED_ERROR_TEXT } from './constants.js';
+import { INVALID_INPUT_ERROR_TEXT, commands } from './constants.js';
 import showHelp from './help.js';
 import { doUp, doCd, doLs } from './navigation.js';
+import { doCat } from './file-operations.js';
 
 const parseCommand = async (data) => {
   const args = data.split(' ');
+  try{
   if (args.length === 1) { // commands without args
     switch (args[0].trim()) {
       case commands.help:
         showHelp();
         break;
       case commands.up:
-          doUp();
+        doUp();
         break;
       case commands.ls:
-        try {
-          console.log('try to do ls');
-          await doLs();
-        } catch (e){
-          console.log(e);
-          throw new Error(OPERATION_FAILED_ERROR_TEXT);
-        }   
+        await doLs();
         break;
       default:
         throw new Error(INVALID_INPUT_ERROR_TEXT);     
     }
   } else if (args.length === 2) {// commands with one arg
     switch (args[0].trim()) {
-       case commands.cd:
-          try{
-            doCd(args[1].trim());
-          } catch {
-            throw new Error(OPERATION_FAILED_ERROR_TEXT);
-          }        
+      case commands.cd:       
+        doCd(args[1].trim());            
         break;
-        
-        default:
-          throw new Error(INVALID_INPUT_ERROR_TEXT);     
+      case commands.cat:
+        await doCat(args[1].trim());
+        break;        
+      default:
+        throw new Error(INVALID_INPUT_ERROR_TEXT);     
     }
+  } else {
+    throw new Error(INVALID_INPUT_ERROR_TEXT);     
   }
+} catch (e){
+  throw new Error(e.message);
+}     
  
 
 }
