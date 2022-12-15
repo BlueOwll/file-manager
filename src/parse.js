@@ -1,7 +1,7 @@
-import { readdir } from 'fs/promises';
+
 import { INVALID_INPUT_ERROR_TEXT, commands, OPERATION_FAILED_ERROR_TEXT } from './constants.js';
 import showHelp from './help.js';
-import { doUp, doCd } from './navigation.js';
+import { doUp, doCd, doLs } from './navigation.js';
 
 const parseCommand = async (data) => {
   const args = data.split(' ');
@@ -15,11 +15,12 @@ const parseCommand = async (data) => {
         break;
       case commands.ls:
         try {
+          console.log('try to do ls');
           await doLs();
-        } catch {
+        } catch (e){
+          console.log(e);
           throw new Error(OPERATION_FAILED_ERROR_TEXT);
         }   
-        console.log(await readdir(process.cwd()));
         break;
       default:
         throw new Error(INVALID_INPUT_ERROR_TEXT);     
