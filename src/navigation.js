@@ -12,12 +12,17 @@ export const doUp = () => {
 }
 
 export const doCd =  (path) => {
-  try {
-    process.chdir(pathResolve(path));
-  } catch {
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+  if (path === '~') { 
+    process.chdir(os.homedir());
+  } else {
+    try {
+      process.chdir(pathResolve(path));
+    } catch {
+      throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    }
+    //console.log(path);
   }
-  //console.log(path);
+
 }
 
 export const doLs = async () => {

@@ -25,7 +25,7 @@ export const app = (args) => {
   process.chdir(os.homedir());
   
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  rl.setPrompt('Enter command >');
+  rl.setPrompt('Enter command:>');
   rl.prompt();
 
   rl.on('line', async (data) => {
