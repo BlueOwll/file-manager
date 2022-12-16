@@ -1,5 +1,5 @@
 import { createReadStream, createWriteStream } from "fs";
-import { access, appendFile, rename, readdir, copyFile, readFile } from "fs/promises";
+import { access, appendFile, rename, readdir, readFile, rm } from "fs/promises";
 import { resolve as resolvePath, basename, dirname } from 'path';
 import { OPERATION_FAILED_ERROR_TEXT, INVALID_INPUT_ERROR_TEXT } from "./constants.js";
 import { promisify } from 'util';
@@ -61,7 +61,7 @@ export const doCp = async (pathSrc, pathDest) => {
     const fullPathSrc = resolvePath(pathSrc);
     const checkedPathDest = resolvePath(pathDest);
    
-    await readFile(fullPathSrc);
+    await readFile(fullPathSrc); 
     await access(checkedPathDest);
 
     const filename = basename(fullPathSrc);
@@ -76,8 +76,50 @@ export const doCp = async (pathSrc, pathDest) => {
     const destStream = createWriteStream(fullPathDest);
 
     await pipeline(srcStream, destStream);
-    
+
     console.log(`File ${pathSrc} successfully copied to ${pathDest}!`);
+  } catch {
+    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+  }  
+}
+export const doMv = async (pathSrc, pathDest) => {  
+  try {
+    const fullPathSrc = resolvePath(pathSrc);
+    const checkedPathDest = resolvePath(pathDest);
+   
+    await readFile(fullPathSrc); 
+    await access(checkedPathDest);
+
+    const filename = basename(fullPathSrc);
+    const destDirList = await readdir(checkedPathDest);
+
+    if (destDirList.includes(filename)) {
+      throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    }
+    const fullPathDest =  resolvePath(checkedPathDest, filename);
+
+    const srcStream = createReadStream(fullPathSrc);
+    const destStream = createWriteStream(fullPathDest);
+
+    await pipeline(srcStream, destStream);
+
+    await rm(fullPathSrc);
+
+    console.log(`File ${pathSrc} successfully moved to ${pathDest}!`);
+  } catch {
+    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+  }  
+}
+
+export const doRm = async (path) => {  
+  try {
+    const fullPath = resolvePath(path);
+    
+    await readFile(fullPath); 
+
+    await rm(fullPath);
+
+    console.log(`File ${path} successfully deleted!`);
   } catch {
     throw new Error(OPERATION_FAILED_ERROR_TEXT);
   }  

@@ -2,7 +2,7 @@
 import { INVALID_INPUT_ERROR_TEXT, commands } from './constants.js';
 import showHelp from './help.js';
 import { doUp, doCd, doLs } from './navigation.js';
-import { doAdd, doCat, doRn, doCp } from './file-operations.js';
+import { doAdd, doCat, doRn, doCp, doMv, doRm } from './file-operations.js';
 
 const parseCommand = async (data) => {
   const args = data.split(' ');
@@ -31,7 +31,10 @@ const parseCommand = async (data) => {
         break;    
       case commands.add:
         await doAdd(args[1].trim());
-        break;           
+        break;         
+      case commands.rm:
+        await doRm(args[1].trim());
+        break;     
       default:
         throw new Error(INVALID_INPUT_ERROR_TEXT);     
     }
@@ -42,6 +45,9 @@ const parseCommand = async (data) => {
         break;
       case commands.cp:       
         await doCp(args[1].trim(), args[2].trim());            
+        break;
+      case commands.mv:       
+        await doMv(args[1].trim(), args[2].trim());            
         break;
       default:
         throw new Error(INVALID_INPUT_ERROR_TEXT);     

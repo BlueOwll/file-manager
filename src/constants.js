@@ -10,5 +10,7 @@ export const commands = {
   cat: 'cat',
   add: 'add',
   rn: 'rn',
-  cp: 'cp'
+  cp: 'cp',
+  mv: 'mv',
+  rm: 'rm'
 }
