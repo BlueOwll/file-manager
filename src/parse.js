@@ -35,7 +35,16 @@ const parseCommand = async (data) => {
       default:
         throw new Error(INVALID_INPUT_ERROR_TEXT);     
     }
-  } else {
+  } else if (args.length === 3) {// commands with two arg
+    switch (args[0].trim()) {
+      case commands.rn:       
+        await doRn(args[1].trim(), args[2].trim());            
+        break;
+      default:
+        throw new Error(INVALID_INPUT_ERROR_TEXT);     
+    }
+  }
+    else {
     throw new Error(INVALID_INPUT_ERROR_TEXT);     
   }
 } catch (e){

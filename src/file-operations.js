@@ -16,12 +16,30 @@ export const doCat = async (path) => {
   } 
 }
 export const doAdd = async (path) => {
-  // regexp
+  // regexp /^[^><:"?*\/\\]+[\.]*[^><:"?*\/\\]*$/gm
+  if (path.match(/^[^><:"?*\/\\]+[^.><:"?*\/\\]$/gi) && path.length <= 255) {
+    try {
+      await access(path);
+      throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    } catch {
+      try {
+        await appendFile(path, '');
+      } catch {
+        throw new Error(OPERATION_FAILED_ERROR_TEXT);
+      }
+      
+    }  
+  } else {
+    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+  }
+ 
+}
+export const doRn = async (pathSrc, pathDist) => { // TODO
   try {
     await access(path);
     throw new Error(OPERATION_FAILED_ERROR_TEXT);
   } catch {
-    await appendFile(path, '');
+    //await appendFile(path, '');
   }  
 }
 
