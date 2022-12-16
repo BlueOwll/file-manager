@@ -1,7 +1,7 @@
 import { createReadStream } from "fs";
-import { access, appendFile } from "fs/promises";
-import { resolve as resolvePath } from 'path';
-import { OPERATION_FAILED_ERROR_TEXT } from "./constants.js";
+import { access, appendFile, rename } from "fs/promises";
+import { resolve as resolvePath, basename, dirname } from 'path';
+import { OPERATION_FAILED_ERROR_TEXT, INVALID_INPUT_ERROR_TEXT } from "./constants.js";
 
 export const doCat = async (path) => {
   try {
@@ -15,8 +15,8 @@ export const doCat = async (path) => {
     throw new Error(OPERATION_FAILED_ERROR_TEXT);
   } 
 }
+
 export const doAdd = async (path) => {
-  // regexp /^[^><:"?*\/\\]+[\.]*[^><:"?*\/\\]*$/gm
   if (path.match(/^[^><:"?*\/\\]+[^.><:"?*\/\\]$/gi) && path.length <= 255) {
     try {
       await access(path);
@@ -25,21 +25,34 @@ export const doAdd = async (path) => {
       try {
         await appendFile(path, '');
       } catch {
-        throw new Error(OPERATION_FAILED_ERROR_TEXT);
+        throw new Error(INVALID_INPUT_ERROR_TEXT);
       }
-      
     }  
   } else {
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
-  }
- 
+    throw new Error(INVALID_INPUT_ERROR_TEXT);
+  } 
 }
-export const doRn = async (pathSrc, pathDist) => { // TODO
+
+export const doRn = async (pathSrc, newFilename) => { // TODO
+  
   try {
-    await access(path);
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    const fullPath = resolvePath(pathSrc);
+    console.log(fullPath);
+    await access(fullPath);
+    const dir = dirname(fullPath);
+    console.log(dir + '  ' + newFilename);
+    if (newFilename.match(/^[^><:"?*\/\\]+[^.><:"?*\/\\]$/gi) && newFilename.length <= 255) {
+      console.log(resolvePath(dir, newFilename));
+      try {
+        await rename(fullPath, resolvePath(dir, newFilename));
+      }catch {
+        throw new Error(INVALID_INPUT_ERROR_TEXT);
+      }
+    } else {
+      throw new Error(INVALID_INPUT_ERROR_TEXT);
+    } 
   } catch {
-    //await appendFile(path, '');
+    throw new Error(OPERATION_FAILED_ERROR_TEXT);
   }  
 }
 
