@@ -19,7 +19,7 @@ export const doCd =  (path) => {
     try {
       process.chdir(pathResolve(path));
     } catch {
-      throw new OperationError('Impossible to change dir');
+      throw new OperationError('No such directory');
     }
     //console.log(path);
   }
