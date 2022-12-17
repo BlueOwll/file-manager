@@ -3,6 +3,7 @@ import { access, appendFile, rename, readdir, readFile, rm } from "fs/promises";
 import { resolve as resolvePath, basename, dirname } from 'path';
 import { pipeline } from 'stream/promises';
 import { InputError, OperationError } from "./custom-errors.js";
+import { directoryExists, fileExists, isExist } from "./utils.js";
 
 export const doCat = async (path) => {
   try {
@@ -13,21 +14,21 @@ export const doCat = async (path) => {
       console.log(chunk);
     }
   } catch {
-    throw new OperationError(`Can't create readstream`);
+    throw new OperationError(`No such file`);
   } 
 }
 
 export const doAdd = async (filename) => {
   if (isFileNameCorrect(filename)) {
     const fullPath = resolvePath(filename);
-    if (await isExist(fullPath)) {
+    if (await fileExists(fullPath)) {
       throw new OperationError(`${filename} already exists`);
     }
     try {
       await appendFile(fullPath, '');
       console.log(`New file ${filename} successfully created!`);
     } catch {
-      throw new InputError('Wrong file name');
+      throw new OperationError('Wrong file name');
     }
 
   } else {
@@ -35,42 +36,52 @@ export const doAdd = async (filename) => {
   }
 }
 
-export const doRn = async (pathSrc, newFilename) => {   
+export const doRn = async (pathSrc, newFilename) => {
+  const fullPath = resolvePath(pathSrc);
   try {
-    const fullPath = resolvePath(pathSrc);
-    await access(fullPath);
-    const dir = dirname(fullPath);
-    if (isFileNameCorrect(newFilename)) {
-      try {
-        await rename(fullPath, resolvePath(dir, newFilename));
-        console.log(`File ${pathSrc} successfully renamed to ${newFilename}!`);
-      }catch {
-        throw new InputError('Wrong file name');
-      }
-    } else {
-      throw new InputError('Wrong file name');
-    } 
+    await readFile(fullPath);
   } catch {
-    throw new OperationError('Path does not exist');
-  }  
+    throw new OperationError('File does not exist');
+  }
+  const fullNewPath = resolvePath(dirname(fullPath), newFilename);
+
+  if (await fileExists(fullNewPath)) {
+    throw new OperationError(`${newFilename} already exists`);
+  }
+
+  if (isFileNameCorrect(newFilename)) {
+    try {
+      await rename(fullPath, fullNewPath);
+      console.log(`File ${pathSrc} successfully renamed to ${newFilename}!`);
+    } catch {
+      throw new OperationError('Wrong file name');
+    }
+  } else {
+    throw new InputError('Wrong file name');
+  }
 }
 
 export const doCp = async (pathSrc, pathDest) => {  
-  try {
     const fullPathSrc = resolvePath(pathSrc);
     const checkedPathDest = resolvePath(pathDest);
    
-    await readFile(fullPathSrc); 
-    await access(checkedPathDest);
-
-    const filename = basename(fullPathSrc);
-    const destDirList = await readdir(checkedPathDest);
-
-    if (destDirList.includes(filename)) {
-      throw new OperationError('File already exists');
+    try {
+      await readFile(fullPathSrc);
+    } catch {
+      throw new OperationError(`File ${fullPathSrc} does not exist`);
     }
+
+    if (!(await directoryExists(checkedPathDest))) {
+      throw new OperationError('Dest path does not exist');
+    }
+    
+    const filename = basename(fullPathSrc);
     const fullPathDest =  resolvePath(checkedPathDest, filename);
 
+    if (await isExist(fullPathDest)) {
+      throw new OperationError(`File ${fullPathDest} already exists`);
+    }    
+    try{
     const srcStream = createReadStream(fullPathSrc);
     const destStream = createWriteStream(fullPathDest);
 
@@ -81,22 +92,27 @@ export const doCp = async (pathSrc, pathDest) => {
     throw new OperationError('Impossible to copy file');
   }  
 }
-export const doMv = async (pathSrc, pathDest) => {  
+export const doMv = async (pathSrc, pathDest) => {
+  const fullPathSrc = resolvePath(pathSrc);
+  const checkedPathDest = resolvePath(pathDest);
+
   try {
-    const fullPathSrc = resolvePath(pathSrc);
-    const checkedPathDest = resolvePath(pathDest);
-   
-    await readFile(fullPathSrc); 
-    await access(checkedPathDest);
+    await readFile(fullPathSrc);
+  } catch {
+    throw new OperationError(`File ${fullPathSrc} does not exist`);
+  }
 
-    const filename = basename(fullPathSrc);
-    const destDirList = await readdir(checkedPathDest);
+  if (!(await directoryExists(checkedPathDest))) {
+    throw new OperationError('Dest path does not exist');
+  }
 
-    if (destDirList.includes(filename)) {
-      throw new OperationError('File already exists');
-    }
-    const fullPathDest =  resolvePath(checkedPathDest, filename);
+  const filename = basename(fullPathSrc);
+  const fullPathDest = resolvePath(checkedPathDest, filename);
 
+  if (await isExist(fullPathDest)) {
+    throw new OperationError(`File ${fullPathDest} already exists`);
+  }
+  try {
     const srcStream = createReadStream(fullPathSrc);
     const destStream = createWriteStream(fullPathDest);
 
@@ -107,31 +123,26 @@ export const doMv = async (pathSrc, pathDest) => {
     console.log(`File ${pathSrc} successfully moved to ${pathDest}!`);
   } catch {
     throw new OperationError('Impossible to move file');
-  }  
+  }
+
 }
 
-export const doRm = async (path) => {  
-  try {
-    const fullPath = resolvePath(path);
-    
-    await readFile(fullPath); 
+export const doRm = async (path) => {
 
+  const fullPath = resolvePath(path);
+  if (!(await fileExists(fullPath))) {
+    throw new OperationError(`File ${fullPath} does not exist`);
+  }
+  try {
     await rm(fullPath);
 
     console.log(`File ${path} successfully deleted!`);
   } catch {
     throw new OperationError('Impossible to delete file');
-  }  
+  }
 }
 
-const isExist = async (path) => {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }  
-}
+
 
 const isFileNameCorrect = (filename) => {
   return filename.match(/^[^><:"?*\/\\]+[^.><:"?*\/\\]$/gi) && filename.length <= 255;

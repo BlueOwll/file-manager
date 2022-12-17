@@ -9,9 +9,8 @@ export const doHash = async (path) => {
   
   await readFile(fullPath, { encoding: 'utf8' })
       .then((res) => { 
-        if (res) { 
-          console.log(hash.update(res).digest('hex'));
-        }})
+        console.log(hash.update(res).digest('hex'));
+        })
       .catch(() => { throw new OperationError('No such file')})
   
   

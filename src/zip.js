@@ -4,23 +4,19 @@ import { resolve as resolvePath, dirname, basename } from 'path';
 import { pipeline } from 'stream/promises';
 import { createBrotliCompress, createBrotliDecompress } from 'zlib';
 import { OperationError } from './custom-errors.js';
+import { directoryExists, fileExists, isExist } from './utils.js';
 
 
 export const doCompress = async (pathSrc, pathDest) => {
   const fullPathSrc = resolvePath(pathSrc);
   const fullPathDest = resolvePath(pathDest);
-  try {
-    await readFile(fullPathSrc);
-  } catch {
+  if(!(await fileExists(fullPathSrc))) {
     throw new OperationError('File to compress is not found');
   }
-  try {
-    if (!(await stat(dirname(fullPathDest))).isDirectory()) {
-      throw new OperationError('Destination path is not found');
-    }
-  } catch {
+  if(!(await directoryExists(dirname(fullPathDest)))) {
     throw new OperationError('Destination path is not found');
   }
+  
   if (await isExist(fullPathDest)) {
     throw new OperationError('Destination file already exists');
   }
@@ -38,18 +34,13 @@ export const doCompress = async (pathSrc, pathDest) => {
 export const doDecompress = async (pathSrc, pathDest) => {
   const fullPathSrc = resolvePath(pathSrc);
   const fullPathDest = resolvePath(pathDest);
-  try {
-    await readFile(fullPathSrc);
-  } catch {
+  if(!(await fileExists(fullPathSrc))) {
     throw new OperationError('File to decompress is not found');
   }
-  try {
-    if (!(await stat(dirname(fullPathDest))).isDirectory()) {
-      throw new OperationError('Destination path is not found');
-    }
-  } catch {
+  if(!(await directoryExists(dirname(fullPathDest)))) {
     throw new OperationError('Destination path is not found');
   }
+  
   if (await isExist(fullPathDest)) {
     throw new OperationError('Destination file already exists');
   }
@@ -65,11 +56,3 @@ export const doDecompress = async (pathSrc, pathDest) => {
   }
 }
 
-const isExist = async (path) => {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }  
-}

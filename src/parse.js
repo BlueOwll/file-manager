@@ -9,7 +9,8 @@ import { doHash } from './hash-calculatin.js';
 import { doCompress, doDecompress } from './zip.js';
 
 const parseCommand = async (data) => {
-  const args = data.split(' ');
+  const argsRaw = data.split(' ');
+  const args = argsRaw.filter((item) => item);
   try {
     if (args.length === 1) { // commands without args
       switch (args[0].trim()) {
@@ -23,7 +24,7 @@ const parseCommand = async (data) => {
           await doLs();
           break;
         default:
-          throw new InputError('Wrong command');
+          throw new InputError();
       }
     } else if (args.length === 2) {// commands with one arg
       switch (args[0].trim()) {
@@ -46,7 +47,7 @@ const parseCommand = async (data) => {
           await doHash(args[1].trim());
           break;
         default:
-          throw new InputError('Wrong command');
+          throw new InputError();
       }
     } else if (args.length === 3) {// commands with two arg
       switch (args[0].trim()) {
@@ -66,11 +67,11 @@ const parseCommand = async (data) => {
           await doDecompress (args[1].trim(), args[2].trim());
           break;  
         default:
-          throw new InputError('Wrong command');
+          throw new InputError();
       }
     }
     else {
-      throw new InputError('Wrong command');
+      throw new InputError();
     }
   } catch (e) {
     let errMessage = 'ERROR';
