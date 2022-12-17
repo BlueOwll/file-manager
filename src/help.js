@@ -1,4 +1,5 @@
 import { commands } from "./constants.js";
+import { osKeys } from "./os-data.js";
 const showHelp = () => {
   console.log('Following commands are supported:');
   console.log(`  ${commands.help} - help`);
@@ -12,5 +13,12 @@ const showHelp = () => {
   console.log(`  ${commands.cp} path_to_file path_to_new_directory - Copy file`);
   console.log(`  ${commands.mv} path_to_file path_to_new_directory - Move file`);
   console.log(`  ${commands.rm} path_to_file - Delete file`);
+  console.log(`  ${commands.os} --${osKeys.eol} - Show EOL (default system End-Of-Line)`);
+  console.log(`  ${commands.os} --${osKeys.cpus} - Show host machine CPUs info (overall amount of CPUS plus model and clock rate (in GHz) for each of them`);
+  console.log(`  ${commands.os} --${osKeys.homedir} - Show  home directory`);
+  console.log(`  ${commands.os} --${osKeys.username} - Show current system user name`);
+  console.log(`  ${commands.os} --${osKeys.architecture} - Show CPU architecture for which Node.js binary has compiled`);
+
+
 }
 export default showHelp;

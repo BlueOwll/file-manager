@@ -1,9 +1,8 @@
 import { createReadStream, createWriteStream } from "fs";
 import { access, appendFile, rename, readdir, readFile, rm } from "fs/promises";
 import { resolve as resolvePath, basename, dirname } from 'path';
-import { OPERATION_FAILED_ERROR_TEXT, INVALID_INPUT_ERROR_TEXT } from "./constants.js";
-import { promisify } from 'util';
 import { pipeline } from 'stream/promises';
+import { InputError, OperationError } from "./custom-errors.js";
 
 export const doCat = async (path) => {
   try {
@@ -14,7 +13,7 @@ export const doCat = async (path) => {
       console.log(chunk);
     }
   } catch {
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    throw new OperationError(`Can't create readstream`);
   } 
 }
 
@@ -22,17 +21,17 @@ export const doAdd = async (filename) => {
   if (isFileNameCorrect(filename)) {
     try {
       await access(resolvePath(filename));
-      throw new Error(OPERATION_FAILED_ERROR_TEXT);
+      throw new OperationError(`${filename} exists alreday`);
     } catch {
       try {
         await appendFile(filename, '');
         console.log(`New file ${filename} successfully created!`);
       } catch {
-        throw new Error(INVALID_INPUT_ERROR_TEXT);
+        throw new InputError('Wrong file name');
       }
     }  
   } else {
-    throw new Error(INVALID_INPUT_ERROR_TEXT);
+    throw new InputError('Wrong file name');
   } 
 }
 
@@ -46,13 +45,13 @@ export const doRn = async (pathSrc, newFilename) => {
         await rename(fullPath, resolvePath(dir, newFilename));
         console.log(`File ${pathSrc} successfully renamed to ${newFilename}!`);
       }catch {
-        throw new Error(INVALID_INPUT_ERROR_TEXT);
+        throw new InputError('Wrong file name');
       }
     } else {
-      throw new Error(INVALID_INPUT_ERROR_TEXT);
+      throw new InputError('Wrong file name');
     } 
   } catch {
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    throw new OperationError('Path does not exist');
   }  
 }
 
@@ -68,7 +67,7 @@ export const doCp = async (pathSrc, pathDest) => {
     const destDirList = await readdir(checkedPathDest);
 
     if (destDirList.includes(filename)) {
-      throw new Error(OPERATION_FAILED_ERROR_TEXT);
+      throw new OperationError('File already exists');
     }
     const fullPathDest =  resolvePath(checkedPathDest, filename);
 
@@ -79,7 +78,7 @@ export const doCp = async (pathSrc, pathDest) => {
 
     console.log(`File ${pathSrc} successfully copied to ${pathDest}!`);
   } catch {
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    throw new OperationError('Impossible to copy file');
   }  
 }
 export const doMv = async (pathSrc, pathDest) => {  
@@ -94,7 +93,7 @@ export const doMv = async (pathSrc, pathDest) => {
     const destDirList = await readdir(checkedPathDest);
 
     if (destDirList.includes(filename)) {
-      throw new Error(OPERATION_FAILED_ERROR_TEXT);
+      throw new OperationError('File already exists');
     }
     const fullPathDest =  resolvePath(checkedPathDest, filename);
 
@@ -107,7 +106,7 @@ export const doMv = async (pathSrc, pathDest) => {
 
     console.log(`File ${pathSrc} successfully moved to ${pathDest}!`);
   } catch {
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    throw new OperationError('Impossible to move file');
   }  
 }
 
@@ -121,7 +120,7 @@ export const doRm = async (path) => {
 
     console.log(`File ${path} successfully deleted!`);
   } catch {
-    throw new Error(OPERATION_FAILED_ERROR_TEXT);
+    throw new OperationError('Impossible to delete file');
   }  
 }
 
