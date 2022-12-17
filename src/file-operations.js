@@ -19,20 +19,20 @@ export const doCat = async (path) => {
 
 export const doAdd = async (filename) => {
   if (isFileNameCorrect(filename)) {
+    const fullPath = resolvePath(filename);
+    if (await isExist(fullPath)) {
+      throw new OperationError(`${filename} already exists`);
+    }
     try {
-      await access(resolvePath(filename));
-      throw new OperationError(`${filename} exists alreday`);
+      await appendFile(fullPath, '');
+      console.log(`New file ${filename} successfully created!`);
     } catch {
-      try {
-        await appendFile(filename, '');
-        console.log(`New file ${filename} successfully created!`);
-      } catch {
-        throw new InputError('Wrong file name');
-      }
-    }  
+      throw new InputError('Wrong file name');
+    }
+
   } else {
     throw new InputError('Wrong file name');
-  } 
+  }
 }
 
 export const doRn = async (pathSrc, newFilename) => {   
@@ -124,7 +124,6 @@ export const doRm = async (path) => {
   }  
 }
 
-
 const isExist = async (path) => {
   try {
     await access(path);
@@ -133,6 +132,7 @@ const isExist = async (path) => {
     return false;
   }  
 }
+
 const isFileNameCorrect = (filename) => {
   return filename.match(/^[^><:"?*\/\\]+[^.><:"?*\/\\]$/gi) && filename.length <= 255;
 }

@@ -6,6 +6,7 @@ import { doAdd, doCat, doRn, doCp, doMv, doRm } from './file-operations.js';
 import { InputError, OperationError } from './custom-errors.js';
 import { doOs } from './os-data.js';
 import { doHash } from './hash-calculatin.js';
+import { doCompress, doDecompress } from './zip.js';
 
 const parseCommand = async (data) => {
   const args = data.split(' ');
@@ -59,8 +60,10 @@ const parseCommand = async (data) => {
           await doMv(args[1].trim(), args[2].trim());
           break;
         case commands.compress:
+          await doCompress(args[1].trim(), args[2].trim());
           break;
         case commands.decompress:
+          await doDecompress (args[1].trim(), args[2].trim());
           break;  
         default:
           throw new InputError('Wrong command');
@@ -70,12 +73,12 @@ const parseCommand = async (data) => {
       throw new InputError('Wrong command');
     }
   } catch (e) {
-    let errMessage;
+    let errMessage = 'ERROR';
     if (e instanceof InputError) {
       errMessage = INVALID_INPUT_ERROR_TEXT;
     } else if (e instanceof OperationError) {
       errMessage = OPERATION_FAILED_ERROR_TEXT;
-    }
+    } 
     throw new Error(`${errMessage}: ${e.message}`);
   }
 
