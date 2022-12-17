@@ -5,6 +5,7 @@ import { doUp, doCd, doLs } from './navigation.js';
 import { doAdd, doCat, doRn, doCp, doMv, doRm } from './file-operations.js';
 import { InputError, OperationError } from './custom-errors.js';
 import { doOs } from './os-data.js';
+import { doHash } from './hash-calculatin.js';
 
 const parseCommand = async (data) => {
   const args = data.split(' ');
@@ -40,6 +41,9 @@ const parseCommand = async (data) => {
         case commands.os:
           doOs(args[1].trim());
           break;
+        case commands.hash:
+          await doHash(args[1].trim());
+          break;
         default:
           throw new InputError('Wrong command');
       }
@@ -54,6 +58,10 @@ const parseCommand = async (data) => {
         case commands.mv:
           await doMv(args[1].trim(), args[2].trim());
           break;
+        case commands.compress:
+          break;
+        case commands.decompress:
+          break;  
         default:
           throw new InputError('Wrong command');
       }

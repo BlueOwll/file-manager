@@ -14,4 +14,7 @@ export const commands = {
   mv: 'mv',
   rm: 'rm',
   os: 'os',
+  hash: 'hash',
+  compress: 'compress',
+  decompress: 'decompress'
 }
