@@ -80,7 +80,7 @@ const parseCommand = async (data) => {
     } else if (e instanceof OperationError) {
       errMessage = OPERATION_FAILED_ERROR_TEXT;
     } 
-    throw new Error(`${errMessage}: ${e.message}`);
+    throw new Error(`${errMessage}!`);
   }
 
 }
