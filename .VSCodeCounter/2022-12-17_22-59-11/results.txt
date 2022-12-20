@@ -1,0 +1,35 @@
+Date : 2022-12-17 22:59:11
+Directory : c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src
+Total : 11 files,  514 codes, 1 comments, 79 blanks, all 594 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         11 |        514 |          1 |         79 |        594 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                             | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                |         11 |        514 |          1 |         79 |        594 |
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                         | language   | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\app.js             | JavaScript |         43 |          0 |         13 |         56 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\constants.js       | JavaScript |         19 |          0 |          1 |         20 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\custom-errors.js   | JavaScript |         12 |          0 |          1 |         13 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\file-operations.js | JavaScript |        122 |          0 |         27 |        149 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\hash-calculatin.js | JavaScript |         13 |          0 |          5 |         18 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\help.js            | JavaScript |         25 |          0 |          1 |         26 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\navigation.js      | JavaScript |         63 |          1 |          9 |         73 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\os-data.js         | JavaScript |         56 |          0 |          7 |         63 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\parse.js           | JavaScript |         84 |          0 |          4 |         88 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\utils.js           | JavaScript |         26 |          0 |          3 |         29 |
+| c:\projects\rs_school\nodejs-q4\file-manager\file-manager\src\zip.js             | JavaScript |         51 |          0 |          8 |         59 |
+| Total                                                                            |            |        514 |          1 |         79 |        594 |
++----------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
